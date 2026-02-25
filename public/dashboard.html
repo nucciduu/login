@@ -118,6 +118,20 @@
         
         <button class="btn-logout" onclick="logout()">Sair do Sistema</button>
     </div>
+
+
+<hr>
+<h3>Meus Produtos</h3>
+<div style="display: flex; gap: 5px; margin-bottom: 20px;">
+    <input type="text" id="p-nome" placeholder="Nome do Produto" style="width: 60%;">
+    <input type="number" id="p-preco" placeholder="R$" style="width: 30%;">
+    <button onclick="adicionarProduto()" style="width: 10%; background: #28a745;">+</button>
+</div>
+
+<div id="lista-produtos" style="text-align: left;"></div>
+
+
+
 </div>
 
 <script>
