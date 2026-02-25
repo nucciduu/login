@@ -3,63 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Usuário</title>
+    <title>Painel de Controle - Área VIP</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 350px; text-align: center; }
-        .avatar { width: 80px; height: 80px; background: #007bff; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px; }
-        h2 { margin: 10px 0; color: #333; }
-        p { color: #666; font-size: 14px; margin: 5px 0; }
-        .id-badge { font-family: monospace; background: #eee; padding: 2px 8px; border-radius: 4px; color: #888; }
-        button { margin-top: 25px; width: 100%; padding: 10px; border: none; background: #ff4757; color: white; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #ff6b81; }
+        /* Estilos Gerais */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+
+        .card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            width: 100%;
+            max-width: 350px; 
+            text-align: center; 
+            transition: transform 0.3s ease;
+        }
+
+        /* Avatar com a Inicial do Usuário */
+        .avatar { 
+            width: 80px; 
+            height: 80px; 
+            background: linear-gradient(135deg, #007bff, #0056b3); 
+            color: white; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 35px; 
+            font-weight: bold;
+            margin: 0 auto 20px; 
+            box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+        }
+
+        h2 { margin: 10px 0; color: #1c1e21; font-size: 22px; word-wrap: break-word; }
+        
+        p { color: #606770; font-size: 14px; margin: 10px 0; }
+
+        .id-badge { 
+            font-family: 'Courier New', Courier, monospace; 
+            background: #e4e6eb; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            color: #4b4f56; 
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        /* Botão de Sair */
+        .btn-logout { 
+            margin-top: 30px; 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            background: #ff4757; 
+            color: white; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: 600; 
+            transition: background 0.3s; 
+        }
+
+        .btn-logout:hover { background: #ff6b81; }
+
+        /* Estilo do Loading (Spinner) */
+        #loading-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Esconde o conteúdo do perfil até carregar */
+        #conteudo-perfil { display: none; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div class="avatar" id="inicial">?</div>
-    <h2 id="user-email">Carregando...</h2>
-    <p>ID do Usuário: <span class="id-badge" id="user-id">...</span></p>
-    <button onclick="logout()">Sair do Sistema</button>
+    <div id="loading-area">
+        <div class="loader"></div>
+        <p>Autenticando sessão...</p>
+    </div>
+
+    <div id="conteudo-perfil">
+        <div class="avatar" id="avatar-inicial">?</div>
+        <h2 id="email-usuario">usuario@email.com</h2>
+        <p>ID da Conta:</p>
+        <span class="id-badge" id="id-usuario">------------------------</span>
+        
+        <button class="btn-logout" onclick="logout()">Sair do Sistema</button>
+    </div>
 </div>
 
 <script>
+    // 1. Verifica se existe um token no localStorage assim que a página abre
     const token = localStorage.getItem('token');
 
+    // Se não tiver token, manda de volta para o login imediatamente
     if (!token) {
         window.location.href = "index.html";
     }
 
-    async function carregarPerfil() {
+    async function carregarDadosDoServidor() {
         try {
+            // 2. Faz a chamada para a rota protegida /perfil
             const resposta = await fetch('/perfil', {
-                headers: { 'Authorization': 'Bearer ' + token }
+                method: 'GET',
+                headers: { 
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                }
             });
 
             if (resposta.ok) {
-                const user = await resposta.json();
+                const dados = await resposta.json();
+
+                // 3. Preenche os campos com os dados vindos do MongoDB
+                document.getElementById('email-usuario').innerText = dados.email;
+                document.getElementById('id-usuario').innerText = dados._id;
                 
-                // Preenche os dados na tela
-                document.getElementById('user-email').innerText = user.email;
-                document.getElementById('user-id').innerText = user._id; // O MongoDB usa _id
-                
-                // Coloca a primeira letra do e-mail no avatar
-                document.getElementById('inicial').innerText = user.email.charAt(0).toUpperCase();
+                // Pega a primeira letra do email para o Avatar
+                document.getElementById('avatar-inicial').innerText = dados.email.charAt(0).toUpperCase();
+
+                // 4. Troca o Loading pelo conteúdo real
+                document.getElementById('loading-area').style.display = 'none';
+                document.getElementById('conteudo-perfil').style.display = 'block';
+
             } else {
+                // Se o token for inválido ou expirado, limpa e desloga
+                console.error("Sessão inválida.");
                 logout();
             }
         } catch (erro) {
-            console.error("Erro ao carregar:", erro);
+            console.error("Erro de conexão:", erro);
+            alert("Erro ao conectar com o servidor.");
+            logout();
         }
     }
 
     function logout() {
-        localStorage.removeItem('token');
-        window.location.href = "index.html";
+        localStorage.removeItem('token'); // Apaga o "passaporte"
+        window.location.href = "index.html"; // Volta para o login
     }
 
-    carregarPerfil();
+    // Inicia a busca de dados ao carregar a página
+    carregarDadosDoServidor();
 </script>
 
 </body>
