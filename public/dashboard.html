@@ -187,6 +187,63 @@
 
     // Inicia a busca de dados ao carregar a página
     carregarDadosDoServidor();
+
+
+
+async function carregarProdutos() {
+    const res = await fetch('/products', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const produtos = await res.json();
+    const lista = document.getElementById('lista-produtos');
+    lista.innerHTML = ''; // Limpa a lista
+
+    produtos.forEach(p => {
+        lista.innerHTML += `
+            <div style="background: #f8f9fa; padding: 10px; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #007bff;">
+                <div>
+                    <strong>${p.nome}</strong><br>
+                    <small>R$ ${p.preco}</small>
+                </div>
+                <button onclick="deletarProduto('${p._id}')" style="background:none; border:none; color:red; cursor:pointer;">&times;</button>
+            </div>
+        `;
+    });
+}
+
+async function adicionarProduto() {
+    const nome = document.getElementById('p-nome').value;
+    const preco = document.getElementById('p-preco').value;
+
+    await fetch('/products', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token 
+        },
+        body: JSON.stringify({ nome, preco })
+    });
+
+    document.getElementById('p-nome').value = '';
+    document.getElementById('p-preco').value = '';
+    carregarProdutos(); // Atualiza a "RecyclerView"
+}
+
+async function deletarProduto(id) {
+    if(confirm("Deseja excluir?")) {
+        await fetch(`/products/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        carregarProdutos();
+    }
+}
+
+// Chame carregarProdutos() dentro da função carregarDadosDoServidor() que já tínhamos
+
+
+
+
 </script>
 
 </body>
