@@ -78,4 +78,8 @@ app.get('/perfil', verificarToken, async (req, res) => {
     res.json({ msg: "Bem-vindo à área VIP", user });
 });
 
+app.get('/', (req, res) => {
+    res.send('O servidor de autenticação está rodando com sucesso!');
+});
+
 app.listen(3001, () => console.log("Servidor ativo na porta 3001"));
