@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Área Restrita</title>
+</head>
+<body>
+    <h1>Painel de Controle</h1>
+    <div id="dados-usuario">Carregando dados...</div>
+    <button onclick="logout()">Sair</button>
+
+    <script>
+        // 1. Busca o token que salvamos no login
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            alert("Acesso negado! Faça login primeiro.");
+            window.location.href = "index.html";
+        }
+
+        // 2. Busca dados protegidos do servidor
+        async function buscarDados() {
+            const resposta = await fetch('/perfil', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (resposta.ok) {
+                const user = await resposta.json();
+                document.getElementById('dados-usuario').innerText = `Olá, seu ID é: ${user._id}`;
+            } else {
+                logout(); // Se o token estiver vencido, expulsa o usuário
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = "index.html";
+        }
+
+        buscarDados();
+    </script>
+</body>
+</html>
