@@ -33,6 +33,14 @@ const User = mongoose.model('User', new mongoose.Schema({
     password: { type: String, required: true }
 }));
 
+
+// Modelo de Produto
+const Product = mongoose.model('Product', new mongoose.Schema({
+    nome: String,
+    preco: Number,
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } // Dono do produto
+}));
+
 // 3. MIDDLEWARE DE SEGURANÇA (O "Segurança da Festa")
 function verificarToken(req, res, next) {
     const token = req.headers['authorization'];
@@ -93,6 +101,28 @@ app.get('/perfil', verificarToken, async (req, res) => {
 // --- ROTA RAIZ (Garante que o index.html seja aberto no link do Render) ---
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
+
+// Rota para Criar Produto
+app.post('/products', verificarToken, async (req, res) => {
+    const { nome, preco } = req.body;
+    const novoProduto = new Product({ nome, preco, userId: req.userId });
+    await novoProduto.save();
+    res.json(novoProduto);
+});
+
+// Rota para Listar Produtos do Usuário (O nosso "RecyclerView")
+app.get('/products', verificarToken, async (req, res) => {
+    const produtos = await Product.find({ userId: req.userId });
+    res.json(produtos);
+});
+
+// Rota para Deletar
+app.delete('/products/:id', verificarToken, async (req, res) => {
+    await Product.findByIdAndDelete(req.params.id);
+    res.json({ msg: "Removido!" });
 });
 
 // --- INICIALIZAÇÃO ---
