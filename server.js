@@ -77,8 +77,17 @@ app.post('/login', async (req, res) => {
 
 // 6. ROTA PROTEGIDA (Página VIP)
 app.get('/perfil', verificarToken, async (req, res) => {
-    const user = await User.findById(req.userId).select('-password'); // Busca o user sem a senha
-    res.json({ msg: "Bem-vindo à área VIP", user });
+    try {
+        // O Mongoose retorna o ID como _id por padrão
+        const user = await User.findById(req.userId).select('-password');
+        
+        if (!user) return res.status(404).json({ msg: "Usuário não encontrado" });
+
+        console.log("Usuário encontrado:", user); // Isso aparecerá no log do Render/Terminal
+        res.json(user); 
+    } catch (err) {
+        res.status(500).json({ msg: "Erro ao buscar perfil" });
+    }
 });
 
 // --- ROTA RAIZ (Garante que o index.html seja aberto no link do Render) ---
@@ -91,6 +100,7 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
+
 
 
 
