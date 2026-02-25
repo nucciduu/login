@@ -3,17 +3,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 require('dotenv').config(); // Para carregar variáveis de ambiente
 
 const app = express();
-
+// --- CONFIGURAÇÕES INICIAIS ---
 app.use(cors()); // Isso libera o acesso para o seu HTML
-
 app.use(express.json()); // Para o servidor entender JSON
 
+// Serve os arquivos da pasta 'public' (seu index.html deve estar lá dentro)
+app.use(express.static(path.join(__dirname, 'public')));
+
 // 1. CONEXÃO COM O BANCO (Use sua URL do MongoDB Atlas aqui)
-const MONGO_URI = process.env.MONGO_URI || "sua_url_aqui";
-const JWT_SECRET = process.env.JWT_SECRET || "chave_secreta_padrao";
+const MONGO_URI = process.env.MONGO_URI;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 mongoose.connect(MONGO_URI)
   .then(() => console.log("Conectado ao MongoDB!"))
@@ -78,10 +81,16 @@ app.get('/perfil', verificarToken, async (req, res) => {
     res.json({ msg: "Bem-vindo à área VIP", user });
 });
 
-app.get('/', (req, res) => {
-    res.send('O servidor de autenticação está rodando com sucesso!');
+// --- ROTA RAIZ (Garante que o index.html seja aberto no link do Render) ---
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(3001, () => console.log("Servidor ativo na porta 3001"));
+// --- INICIALIZAÇÃO ---
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor rodando na porta ${PORT}`);
+});
+
 
 
