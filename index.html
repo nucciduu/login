@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Acesso Seguro</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { text-align: center; color: #1c1e21; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #007bff; border: none; color: white; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        .toggle-link { text-align: center; margin-top: 15px; font-size: 14px; color: #007bff; cursor: pointer; }
+        #mensagem { text-align: center; margin-top: 10px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 id="titulo">Login</h2>
+    <input type="email" id="email" placeholder="Seu E-mail" required>
+    <input type="password" id="password" placeholder="Sua Senha" required>
+    <button onclick="executarAcao()" id="btnAcao">Entrar</button>
+    <div class="toggle-link" onclick="toggleModo()" id="linkTrocar">Não tem conta? Cadastre-se</div>
+    <p id="mensagem"></p>
+</div>
+
+<script>
+    let modoLogin = true;
+    const API_URL = "https://login-dv38.onrender.com"; // Se estiver no Render, troque pela URL de lá
+
+    function toggleModo() {
+        modoLogin = !modoLogin;
+        document.getElementById('titulo').innerText = modoLogin ? "Login" : "Cadastro";
+        document.getElementById('btnAcao').innerText = modoLogin ? "Entrar" : "Cadastrar";
+        document.getElementById('linkTrocar').innerText = modoLogin ? "Não tem conta? Cadastre-se" : "Já tem conta? Faça Login";
+    }
+
+    async function executarAcao() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const msgDiv = document.getElementById('mensagem');
+        
+        const rota = modoLogin ? "/login" : "/register";
+
+        try {
+            const resposta = await fetch(API_URL + rota, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const dados = await resposta.json();
+
+            if (resposta.ok) {
+                msgDiv.style.color = "green";
+                msgDiv.innerText = modoLogin ? "Login realizado!" : "Cadastro feito! Agora faça login.";
+                
+                if (modoLogin && dados.token) {
+                    // SALVA O TOKEN NO NAVEGADOR
+                    localStorage.setItem('token', dados.token);
+                    alert("Sucesso! Você será redirecionado.");
+                    // window.location.href = "dashboard.html"; // Exemplo de redirecionamento
+                }
+            } else {
+                msgDiv.style.color = "red";
+                msgDiv.innerText = dados.msg || "Erro na operação.";
+            }
+        } catch (erro) {
+            msgDiv.innerText = "Erro ao conectar com o servidor.";
+        }
+    }
+</script>
+
+</body>
+</html>
