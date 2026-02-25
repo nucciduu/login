@@ -11,6 +11,8 @@ app.use(cors()); // Isso libera o acesso para o seu HTML
 
 app.use(express.json()); // Para o servidor entender JSON
 
+app.use(express.static('public'))
+
 // 1. CONEXÃO COM O BANCO (Use sua URL do MongoDB Atlas aqui)
 const MONGO_URI = process.env.MONGO_URI || "sua_url_aqui";
 const JWT_SECRET = process.env.JWT_SECRET || "chave_secreta_padrao";
@@ -83,3 +85,4 @@ app.get('/', (req, res) => {
 });
 
 app.listen(3001, () => console.log("Servidor ativo na porta 3001"));
+
