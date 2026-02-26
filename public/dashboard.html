@@ -190,6 +190,54 @@ carregarProdutos();
 
 
 
+let editandoId = null;
+
+async function executarAcaoProduto() {
+    const nome = document.getElementById('p-nome').value;
+    const preco = document.getElementById('p-preco').value;
+    const btn = document.getElementById('btn-salvar');
+
+    if (!nome || !preco) return alert("Preencha tudo!");
+
+    const url = editandoId ? `/products/${editandoId}` : '/products';
+    const metodo = editandoId ? 'PUT' : 'POST';
+
+    const res = await fetch(url, {
+        method: metodo,
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token 
+        },
+        body: JSON.stringify({ nome, preco })
+    });
+
+    if (res.ok) {
+        cancelarEdicao(); // Limpa tudo
+        carregarProdutos(); // Atualiza a lista
+    }
+}
+
+function prepararEdicao(id, nome, preco) {
+    editandoId = id;
+    document.getElementById('p-nome').value = nome;
+    document.getElementById('p-preco').value = preco;
+    
+    const btn = document.getElementById('btn-salvar');
+    btn.innerText = "Salvar";
+    btn.style.background = "#ff9f43"; // Cor laranja para indicar edição
+}
+
+function cancelarEdicao() {
+    editandoId = null;
+    document.getElementById('p-nome').value = '';
+    document.getElementById('p-preco').value = '';
+    const btn = document.getElementById('btn-salvar');
+    btn.innerText = "Adicionar";
+    btn.style.background = "#28a745";
+}
+
+
+
 async function carregarProdutos() {
     const res = await fetch('/products', {
         headers: { 'Authorization': 'Bearer ' + token }
