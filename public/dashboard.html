@@ -222,7 +222,8 @@
                 document.getElementById('id-usuario').innerText = dados._id;
 
 carregarProdutos();
-                
+carregarListasDeCompras();
+
                 // Pega a primeira letra do email para o Avatar
                 document.getElementById('avatar-inicial').innerText = dados.email.charAt(0).toUpperCase();
 
@@ -352,6 +353,65 @@ function renderizarLista(listaParaExibir) {
         `;
     });
 }
+
+// Chame esta função dentro do carregarDadosDoServidor()
+async function carregarListasDeCompras() {
+    try {
+        const res = await fetch('/shopping-lists', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const listas = await res.json();
+        const container = document.getElementById('lista-compras-salvas');
+        
+        if (listas.length === 0) {
+            container.innerHTML = '<p style="color:#999; font-size:14px;">Nenhuma lista salva ainda.</p>';
+            return;
+        }
+
+        container.innerHTML = '';
+        listas.forEach(lista => {
+            const dataFormatada = new Date(lista.data).toLocaleDateString('pt-BR');
+            container.innerHTML += `
+                <div class="item-lista-salva" onclick='abrirDetalhes(${JSON.stringify(lista)})'>
+                    <div>
+                        <strong>${lista.nome}</strong><br>
+                        <small style="color:#666;">Data: ${dataFormatada}</small>
+                    </div>
+                    <span class="badge-itens">${lista.itens.length} itens</span>
+                </div>
+            `;
+        });
+    } catch (err) {
+        console.error("Erro ao carregar listas:", err);
+    }
+}
+
+function abrirDetalhes(lista) {
+    document.getElementById('detalhe-nome-lista').innerText = lista.nome;
+    const dataFormatada = new Date(lista.data).toLocaleDateString('pt-BR');
+    document.getElementById('detalhe-data-lista').innerText = "Criada em: " + dataFormatada;
+
+    const itensDiv = document.getElementById('detalhe-itens');
+    itensDiv.innerHTML = '<h4>Itens:</h4>';
+    
+    lista.itens.forEach(item => {
+        itensDiv.innerHTML += `
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0;">
+                <span>${item.nome}</span>
+                <span style="font-weight:bold;">x${item.quantidade}</span>
+            </div>
+        `;
+    });
+
+    document.getElementById('modal-detalhes').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('modal-detalhes').style.display = 'none';
+}
+
+// Lembre-se de atualizar o carregarDadosDoServidor para incluir carregarListasDeCompras()
+
 
 // A função mágica de busca
 function filtrarProdutos() {
