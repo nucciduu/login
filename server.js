@@ -137,6 +137,14 @@ app.delete('/products/:id', verificarToken, async (req, res) => {
 app.put('/products/:id', verificarToken, async (req, res) => {
     try {
         const { nome, preco } = req.body;
+
+VALIDAÇÕES:
+        if (!nome || nome.trim().length < 2) {
+            return res.status(400).json({ msg: "Nome do produto deve ter pelo menos 2 caracteres." });
+        }
+        if (isNaN(preco) || preco <= 0) {
+            return res.status(400).json({ msg: "O preço deve ser um número maior que zero." });
+        }
         // Só permite atualizar se o produto pertencer ao usuário logado
         const produtoAtualizado = await Product.findOneAndUpdate(
             { _id: req.params.id, userId: req.userId },
