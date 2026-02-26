@@ -75,6 +75,25 @@
 
         .btn-logout:hover { background: #ff6b81; }
 
+
+     /* Botão de Nova Compra */
+        .btn-novacompra { 
+            margin-top: 30px; 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            background: #ff4757; 
+            color: white; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: 600; 
+            transition: background 0.3s; 
+        }
+
+        .btn-novacompra:hover { background: #ff6b81; }
+
+
         /* Estilo do Loading (Spinner) */
         #loading-area {
             display: flex;
@@ -148,7 +167,7 @@
         <button class="btn-logout" onclick="logout()">Sair do Sistema</button>
     </div>
 
-<button onclick="window.location.href='compras.html'" style="background: #6f42c1; color: white; margin-bottom: 20px;">
+<button class="btn-novacompra" onclick="window.location.href='compras.html'">
     🛒 Criar Nova Lista de Compras
 </button>
 
