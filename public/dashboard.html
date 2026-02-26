@@ -270,19 +270,9 @@
 
 
 
-// 1. Faz o loading começar a sumir (fade out)
-const loadingArea = document.getElementById('loading-area');
-const conteudoPerfil = document.getElementById('conteudo-perfil');
-
-loadingArea.style.opacity = '0';
-
-// 2. Espera o tempo da transição (400ms) para remover o loading e mostrar o perfil
-setTimeout(() => {
-    loadingArea.style.display = 'none'; // Remove do layout
-    
-    // 3. Ativa o efeito de entrada do conteúdo (fade in + subida)
-    conteudoPerfil.classList.add('fade-in');
-}, 400);
+   // TROCA O LOADING PELO CONTEÚDO
+                document.getElementById('loading-area').style.display = 'none';
+                document.getElementById('conteudo-card').style.display = 'block';
 
 
 
