@@ -99,14 +99,27 @@ app.get('/perfil', verificarToken, async (req, res) => {
 });
 
 
-
-// Rota para Criar Produto
+// Rota para Criar Produto com Validação
 app.post('/products', verificarToken, async (req, res) => {
-    const { nome, preco } = req.body;
-    const novoProduto = new Product({ nome, preco, userId: req.userId });
-    await novoProduto.save();
-    res.json(novoProduto);
+    try {
+        const { nome, preco } = req.body;
+
+        // VALIDAÇÕES:
+        if (!nome || nome.trim().length < 2) {
+            return res.status(400).json({ msg: "Nome do produto deve ter pelo menos 2 caracteres." });
+        }
+        if (isNaN(preco) || preco <= 0) {
+            return res.status(400).json({ msg: "O preço deve ser um número maior que zero." });
+        }
+
+        const novoProduto = new Product({ nome: nome.trim(), preco, userId: req.userId });
+        await novoProduto.save();
+        res.json(novoProduto);
+    } catch (err) {
+        res.status(500).json({ msg: "Erro ao salvar produto." });
+    }
 });
+
 
 // Rota para Listar Produtos do Usuário (O nosso "RecyclerView")
 app.get('/products', verificarToken, async (req, res) => {
