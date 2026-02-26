@@ -196,6 +196,16 @@ async function carregarProdutos() {
     });
     const produtos = await res.json();
     const lista = document.getElementById('lista-produtos');
+
+
+if (produtos.length === 0) {
+    lista.innerHTML = `
+        <div style="text-align:center; color:#999; padding:20px; border: 2px dashed #ddd; border-radius:10px;">
+            Sua vitrine está vazia. <br> Cadastre seu primeiro produto acima!
+        </div>`;
+    return;
+}
+
     lista.innerHTML = ''; // Limpa a lista
 
     produtos.forEach(p => {
