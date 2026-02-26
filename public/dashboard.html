@@ -199,15 +199,22 @@ async function carregarProdutos() {
     lista.innerHTML = ''; // Limpa a lista
 
     produtos.forEach(p => {
-        lista.innerHTML += `
-            <div style="background: #f8f9fa; padding: 10px; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #007bff;">
-                <div>
-                    <strong>${p.nome}</strong><br>
-                    <small>R$ ${p.preco}</small>
-                </div>
-                <button onclick="deletarProduto('${p._id}')" style="background:none; border:none; color:red; cursor:pointer;">&times;</button>
-            </div>
-        `;
+       lista.innerHTML += `
+    <div style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; 
+                display: flex; justify-content: space-between; align-items: center; 
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid #007bff;">
+        <div style="display: flex; flex-direction: column;">
+            <span style="font-weight: bold; color: #333; font-size: 16px;">${p.nome}</span>
+            <span style="color: #28a745; font-size: 14px; font-weight: 600;">R$ ${Number(p.preco).toFixed(2)}</span>
+        </div>
+        <button onclick="deletarProduto('${p._id}')" 
+                style="background: #fff1f0; color: #ff4d4f; border: 1px solid #ffccc7; 
+                       padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            Excluir
+        </button>
+    </div>
+`;
+
     });
 }
 
