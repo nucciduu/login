@@ -191,31 +191,45 @@ carregarProdutos();
 
 
 let editandoId = null;
-
 async function executarAcaoProduto() {
-    const nome = document.getElementById('p-nome').value;
-    const preco = document.getElementById('p-preco').value;
-    const btn = document.getElementById('btn-salvar');
+    const nome = document.getElementById('p-nome').value.trim();
+    const preco = parseFloat(document.getElementById('p-preco').value);
 
-    if (!nome || !preco) return alert("Preencha tudo!");
+    // Validação imediata no Frontend
+    if (nome.length < 2) {
+        alert("Por favor, digite um nome válido para o produto.");
+        return;
+    }
+    if (isNaN(preco) || preco <= 0) {
+        alert("O preço deve ser um valor positivo.");
+        return;
+    }
 
     const url = editandoId ? `/products/${editandoId}` : '/products';
     const metodo = editandoId ? 'PUT' : 'POST';
 
-    const res = await fetch(url, {
-        method: metodo,
-        headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token 
-        },
-        body: JSON.stringify({ nome, preco })
-    });
+    try {
+        const res = await fetch(url, {
+            method: metodo,
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token 
+            },
+            body: JSON.stringify({ nome, preco })
+        });
 
-    if (res.ok) {
-        cancelarEdicao(); // Limpa tudo
-        carregarProdutos(); // Atualiza a lista
+        if (res.ok) {
+            cancelarEdicao();
+            carregarProdutos();
+        } else {
+            const erro = await res.json();
+            alert("Erro do servidor: " + erro.msg);
+        }
+    } catch (err) {
+        alert("Erro de conexão.");
     }
 }
+
 
 function prepararEdicao(id, nome, preco) {
     editandoId = id;
