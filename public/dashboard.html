@@ -240,8 +240,6 @@
                 document.getElementById('email-usuario').innerText = dados.email;
                 document.getElementById('id-usuario').innerText = dados._id;
 
-carregarProdutos();
-carregarListasDeCompras();
 
                 // Pega a primeira letra do email para o Avatar
                 document.getElementById('avatar-inicial').innerText = dados.email.charAt(0).toUpperCase();
@@ -249,6 +247,10 @@ carregarListasDeCompras();
                 // 4. Troca o Loading pelo conteúdo real
                 document.getElementById('loading-area').style.display = 'none';
                 document.getElementById('conteudo-perfil').style.display = 'block';
+
+carregarProdutos();
+carregarListasDeCompras();
+
 
             } else {
                 // Se o token for inválido ou expirado, limpa e desloga
