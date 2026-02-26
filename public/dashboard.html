@@ -132,6 +132,12 @@
     <input type="hidden" id="p-id"> <button id="btn-salvar" onclick="executarAcaoProduto()" style="width: 25%; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Adicionar</button>
 </div>
 
+<div style="margin-top: 20px; margin-bottom: 10px;">
+    <input type="text" id="campo-busca" placeholder="🔍 Pesquisar produto..." 
+           onkeyup="filtrarProdutos()" 
+           style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box;">
+</div>
+
 
 <div id="lista-produtos" style="text-align: left;"></div>
 
