@@ -1,0 +1,76 @@
+<style>
+    /* ... seu CSS anterior ... */
+
+    /* Estilo do Spinner */
+    .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #007bff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Esconde o conteúdo inicialmente */
+    #conteudo-card { display: none; }
+</style>
+
+<div class="card">
+    <div id="loading-area">
+        <div class="loader"></div>
+        <p>Buscando seus dados...</p>
+    </div>
+
+    <div id="conteudo-card">
+        <div class="avatar" id="inicial">?</div>
+        <h2 id="user-email"></h2>
+        <p>ID do Usuário: <span class="id-badge" id="user-id"></span></p>
+        <button onclick="logout()">Sair do Sistema</button>
+    </div>
+</div>
+
+<script>
+    const token = localStorage.getItem('token');
+    if (!token) { window.location.href = "index.html"; }
+
+    async function carregarPerfil() {
+        // Simulamos um pequeno atraso para o loading ser visível (opcional)
+        // await new Promise(res => setTimeout(res, 800)); 
+
+        try {
+            const resposta = await fetch('/perfil', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (resposta.ok) {
+                const user = await resposta.json();
+                
+                // Preenche os dados
+                document.getElementById('user-email').innerText = user.email;
+                document.getElementById('user-id').innerText = user._id;
+                document.getElementById('inicial').innerText = user.email.charAt(0).toUpperCase();
+
+                // TROCA O LOADING PELO CONTEÚDO
+                document.getElementById('loading-area').style.display = 'none';
+                document.getElementById('conteudo-card').style.display = 'block';
+            } else {
+                logout();
+            }
+        } catch (erro) {
+            alert("Erro ao conectar com o servidor.");
+            logout();
+        }
+    }
+    carregarPerfil();
+
+    function logout() {
+        localStorage.removeItem('token');
+        window.location.href = "index.html";
+    }
+</script>
