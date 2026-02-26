@@ -257,21 +257,20 @@ if (produtos.length === 0) {
     lista.innerHTML = ''; // Limpa a lista
 
     produtos.forEach(p => {
-       lista.innerHTML += `
-    <div style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; 
-                display: flex; justify-content: space-between; align-items: center; 
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid #007bff;">
-        <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: bold; color: #333; font-size: 16px;">${p.nome}</span>
-            <span style="color: #28a745; font-size: 14px; font-weight: 600;">R$ ${Number(p.preco).toFixed(2)}</span>
+     // ... dentro do loop da lista de produtos ...
+lista.innerHTML += `
+    <div style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <div>
+            <strong>${p.nome}</strong><br>
+            <span style="color: #28a745;">R$ ${p.preco}</span>
         </div>
-        <button onclick="deletarProduto('${p._id}')" 
-                style="background: #fff1f0; color: #ff4d4f; border: 1px solid #ffccc7; 
-                       padding: 5px 10px; border-radius: 5px; cursor: pointer; font-weight: bold;">
-            Excluir
-        </button>
+        <div>
+            <button onclick="prepararEdicao('${p._id}', '${p.nome}', ${p.preco})" style="background: #e1f5fe; color: #039be5; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Editar</button>
+            <button onclick="deletarProduto('${p._id}')" style="background: #ffebee; color: #c62828; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Excluir</button>
+        </div>
     </div>
 `;
+
 
     });
 }
