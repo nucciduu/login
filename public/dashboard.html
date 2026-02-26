@@ -43,31 +43,6 @@
             box-shadow: 0 4px 10px rgba(0,123,255,0.3);
         }
 
-/* O conteúdo começa invisível e levemente abaixo para um efeito de subida */
-#conteudo-perfil {
-    display: block; /* Mantemos o bloco, mas controlamos a opacidade */
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    pointer-events: none; /* Impede cliques enquanto invisível */
-}
-
-/* Área de loading com transição suave */
-#loading-area {
-    opacity: 1;
-    transition: opacity 0.4s ease;
-}
-
-/* Classe que aplicaremos via JS para mostrar o conteúdo */
-.fade-in {
-    opacity: 1 !important;
-    transform: translateY(0) !important;
-    pointer-events: auto !important;
-}
-
-
-
-
         h2 { margin: 10px 0; color: #1c1e21; font-size: 22px; word-wrap: break-word; }
         
         p { color: #606770; font-size: 14px; margin: 10px 0; }
