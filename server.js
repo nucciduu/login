@@ -120,6 +120,23 @@ app.delete('/products/:id', verificarToken, async (req, res) => {
     res.json({ msg: "Removido!" });
 });
 
+// Rota para Editar/Atualizar Produto
+app.put('/products/:id', verificarToken, async (req, res) => {
+    try {
+        const { nome, preco } = req.body;
+        // Só permite atualizar se o produto pertencer ao usuário logado
+        const produtoAtualizado = await Product.findOneAndUpdate(
+            { _id: req.params.id, userId: req.userId },
+            { nome, preco },
+            { new: true } // Retorna o produto já com as alterações
+        );
+        res.json(produtoAtualizado);
+    } catch (err) {
+        res.status(500).json({ msg: "Erro ao atualizar produto" });
+    }
+});
+
+
 // --- ROTA RAIZ (Garante que o index.html seja aberto no link do Render) ---
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
