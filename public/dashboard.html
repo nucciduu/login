@@ -262,43 +262,59 @@ function cancelarEdicao() {
 }
 
 
+let produtosLocal = []; // Variável para guardar a lista completa
 
 async function carregarProdutos() {
     const res = await fetch('/products', {
         headers: { 'Authorization': 'Bearer ' + token }
     });
-    const produtos = await res.json();
-    const lista = document.getElementById('lista-produtos');
-
-
-if (produtos.length === 0) {
-    lista.innerHTML = `
-        <div style="text-align:center; color:#999; padding:20px; border: 2px dashed #ddd; border-radius:10px;">
-            Sua vitrine está vazia. <br> Cadastre seu primeiro produto acima!
-        </div>`;
-    return;
+    
+    // Guardamos os dados recebidos na nossa variável global
+    produtosLocal = await res.json();
+    
+    // Renderizamos a lista completa inicialmente
+    renderizarLista(produtosLocal);
 }
 
-    lista.innerHTML = ''; // Limpa a lista
+// Nova função apenas para desenhar os itens na tela
+function renderizarLista(listaParaExibir) {
+    const listaDiv = document.getElementById('lista-produtos');
+    listaDiv.innerHTML = '';
 
-    produtos.forEach(p => {
-     // ... dentro do loop da lista de produtos ...
-lista.innerHTML += `
-    <div style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-        <div>
-            <strong>${p.nome}</strong><br>
-            <span style="color: #28a745;">R$ ${p.preco}</span>
-        </div>
-        <div>
-            <button onclick="prepararEdicao('${p._id}', '${p.nome}', ${p.preco})" style="background: #e1f5fe; color: #039be5; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Editar</button>
-            <button onclick="deletarProduto('${p._id}')" style="background: #ffebee; color: #c62828; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Excluir</button>
-        </div>
-    </div>
-`;
+    if (listaParaExibir.length === 0) {
+        listaDiv.innerHTML = '<p style="text-align:center; color:#999;">Nenhum produto encontrado.</p>';
+        return;
+    }
 
-
+    listaParaExibir.forEach(p => {
+        listaDiv.innerHTML += `
+            <div class="produto-item" style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div>
+                    <strong>${p.nome}</strong><br>
+                    <span style="color: #28a745;">R$ ${Number(p.preco).toFixed(2)}</span>
+                </div>
+                <div>
+                    <button onclick="prepararEdicao('${p._id}', '${p.nome}', ${p.preco})" style="background: #e1f5fe; color: #039be5; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Editar</button>
+                    <button onclick="deletarProduto('${p._id}')" style="background: #ffebee; color: #c62828; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Excluir</button>
+                </div>
+            </div>
+        `;
     });
 }
+
+// A função mágica de busca
+function filtrarProdutos() {
+    const termoBusca = document.getElementById('campo-busca').value.toLowerCase();
+    
+    // Filtramos o array local com base no nome
+    const produtosFiltrados = produtosLocal.filter(p => 
+        p.nome.toLowerCase().includes(termoBusca)
+    );
+
+    // Mandamos renderizar apenas os que sobraram no filtro
+    renderizarLista(produtosFiltrados);
+}
+
 
 async function adicionarProduto() {
     const nome = document.getElementById('p-nome').value;
