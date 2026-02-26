@@ -98,11 +98,6 @@ app.get('/perfil', verificarToken, async (req, res) => {
     }
 });
 
-// --- ROTA RAIZ (Garante que o index.html seja aberto no link do Render) ---
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 
 
 // Rota para Criar Produto
@@ -124,6 +119,14 @@ app.delete('/products/:id', verificarToken, async (req, res) => {
     await Product.findByIdAndDelete(req.params.id);
     res.json({ msg: "Removido!" });
 });
+
+// --- ROTA RAIZ (Garante que o index.html seja aberto no link do Render) ---
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
+
 
 // --- INICIALIZAÇÃO ---
 const PORT = process.env.PORT || 3000;
