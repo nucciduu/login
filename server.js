@@ -157,6 +157,38 @@ VALIDAÇÕES:
     }
 });
 
+// Modelo da Lista
+const ShoppingList = mongoose.model('ShoppingList', new mongoose.Schema({
+    nome: String,
+    data: Date,
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    itens: [{
+        produtoId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+        nome: String,
+        quantidade: Number
+    }]
+}));
+
+// Rota para salvar a lista
+app.post('/shopping-lists', verificarToken, async (req, res) => {
+    try {
+        const { nome, data, itens } = req.body;
+        const novaLista = new ShoppingList({ nome, data, itens, userId: req.userId });
+        await novaLista.save();
+        res.status(201).json(novaLista);
+    } catch (err) {
+        res.status(500).json({ msg: "Erro ao salvar lista de compras" });
+    }
+});
+
+// Rota para buscar as listas criadas
+app.get('/shopping-lists', verificarToken, async (req, res) => {
+    const listas = await ShoppingList.find({ userId: req.userId }).sort({ data: -1 });
+    res.json(listas);
+});
+
+
+
 
 // --- ROTA RAIZ (Garante que o index.html seja aberto no link do Render) ---
 app.get('*', (req, res) => {
