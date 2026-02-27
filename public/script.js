@@ -31,7 +31,7 @@
                 document.getElementById('loading-area').style.display = 'none';
                 document.getElementById('conteudo-perfil').style.display = 'block';
                 carregarProdutos()
-                carregarListasDeCompras();
+                
 
             } else {
                 // Se o token for inválido ou expirado, limpa e desloga
