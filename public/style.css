@@ -20,6 +20,17 @@
             transition: transform 0.3s ease;
         }
 
+           .card2 { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            width: 100%;
+            max-width: 350px; 
+            text-align: center; 
+            transition: transform 0.3s ease;
+        }
+
         /* Avatar com a Inicial do Usuário */
         .avatar { 
             width: 80px; 
