@@ -77,6 +77,18 @@
             margin-top: 5px;
         }
 
+        .btn-voltar {
+            background: none;
+            border: none;
+            color: #007bff;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         /* Botão de Nova Compra */
         .btn-novacompra { 
             margin-top: 30px; 
@@ -93,6 +105,25 @@
         }
 
         .btn-novacompra:hover { background: #ff6b81; }
+
+
+                /* Botão de Nova Compra */
+        .btn-produtos { 
+            margin-top: 30px; 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            background: #6f42c1; 
+            color: white; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: 600; 
+            transition: background 0.3s; 
+        }
+
+        .btn-produtos:hover { background: #ff6b81; }
+
 
 
         /* Botão de Sair */
