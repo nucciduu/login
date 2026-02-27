@@ -26,7 +26,7 @@
 
         .card { 
             background: rgb(0, 100, 50); 
-            padding: 15px;
+            padding: 40px;
             border-radius: 15px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
             width: 100%;
@@ -48,8 +48,8 @@
 
         /* Avatar com a Inicial do Usuário */
         .avatar { 
-            width: 80px; 
-            height: 80px; 
+            width: 60px; 
+            height: 60px; 
             background: linear-gradient(135deg, #007bff, #0056b3); 
             color: white; 
             border-radius: 50%; 
