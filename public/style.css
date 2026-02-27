@@ -2,7 +2,7 @@
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background: #f0f2f5; 
-            display: flex; 
+            /*display: flex; */
             justify-content: center; 
             align-items: center; 
             height: 100vh;
