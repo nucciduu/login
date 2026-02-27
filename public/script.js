@@ -116,7 +116,7 @@ function cancelarEdicao() {
 //let produtosLocal = []; // Variável para guardar a lista completa
 
 
-let editandoId = null;
+//let editandoId = null;
 async function executarAcaoProduto() {
     const nome = document.getElementById('p-nome').value.trim();
     const preco = parseFloat(document.getElementById('p-preco').value);
