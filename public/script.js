@@ -31,6 +31,7 @@
                 document.getElementById('loading-area').style.display = 'none';
                 document.getElementById('conteudo-perfil').style.display = 'block';
                 carregarProdutos()
+                carregarListasDeCompras();
                 
 
             } else {
