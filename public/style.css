@@ -1,0 +1,141 @@
+        /* Estilos Gerais */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: #f0f2f5; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+
+        .card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            width: 100%;
+            max-width: 350px; 
+            text-align: center; 
+            transition: transform 0.3s ease;
+        }
+
+        /* Avatar com a Inicial do Usuário */
+        .avatar { 
+            width: 80px; 
+            height: 80px; 
+            background: linear-gradient(135deg, #007bff, #0056b3); 
+            color: white; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 35px; 
+            font-weight: bold;
+            margin: 0 auto 20px; 
+            box-shadow: 0 4px 10px rgba(0,123,255,0.3);
+        }
+
+        h2 { margin: 10px 0; color: #1c1e21; font-size: 22px; word-wrap: break-word; }
+        
+        p { color: #606770; font-size: 14px; margin: 10px 0; }
+
+        .id-badge { 
+            font-family: 'Courier New', Courier, monospace; 
+            background: #e4e6eb; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            color: #4b4f56; 
+            font-size: 12px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        /* Botão de Nova Compra */
+        .btn-novacompra { 
+            margin-top: 30px; 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            background: #6f42c1; 
+            color: white; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: 600; 
+            transition: background 0.3s; 
+        }
+
+        .btn-novacompra:hover { background: #ff6b81; }
+
+
+        /* Botão de Sair */
+        .btn-logout { 
+            margin-top: 30px; 
+            width: 100%; 
+            padding: 12px; 
+            border: none; 
+            background: #ff4757; 
+            color: white; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: 600; 
+            transition: background 0.3s; 
+        }
+
+        .btn-logout:hover { background: #ff6b81; }
+
+        .item-lista-salva {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .item-lista-salva:hover {
+            background: #f8f9fa;
+            border-color: #007bff;
+        }
+
+        .badge-itens {
+            background: #6f42c1;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+
+        /* Estilo do Loading (Spinner) */
+        #loading-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Esconde o conteúdo do perfil até carregar */
+        #conteudo-perfil { display: none; }
+    
