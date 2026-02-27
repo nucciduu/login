@@ -29,8 +29,8 @@
 
         /* Avatar com a Inicial do Usuário */
         .avatar { 
-            width: 60px; 
-            height: 60px; 
+            width: 80px; 
+            height: 80px; 
             background: linear-gradient(135deg, #007bff, #0056b3); 
             color: white; 
             border-radius: 50%; 
@@ -75,25 +75,6 @@
 
         .btn-logout:hover { background: #ff6b81; }
 
-
-     /* Botão de Nova Compra */
-        .btn-novacompra { 
-            margin-top: 30px; 
-            width: 100%; 
-            padding: 12px; 
-            border: none; 
-            background: #6f42c1; 
-            color: white; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-size: 16px;
-            font-weight: 600; 
-            transition: background 0.3s; 
-        }
-
-        .btn-novacompra:hover { background: #ff6b81; }
-
-
         /* Estilo do Loading (Spinner) */
         #loading-area {
             display: flex;
@@ -111,35 +92,6 @@
             animation: spin 1s linear infinite;
             margin-bottom: 15px;
         }
-
-
-.item-lista-salva {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.item-lista-salva:hover {
-    background: #f8f9fa;
-    border-color: #007bff;
-}
-
-.badge-itens {
-    background: #6f42c1;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-}
-
-
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -166,51 +118,21 @@
         
         <button class="btn-logout" onclick="logout()">Sair do Sistema</button>
     </div>
-<button class="btn-novacompra" onclick="window.location.href='compras.html'">
-    🛒 Criar Nova Lista de Compras
-</button>
 
 
 <hr>
-<h3>Meus Produtos</h3><div style="display: flex; gap: 5px; margin-bottom: 20px;">
-    <input type="text" id="p-nome" placeholder="Nome do Produto" style="width: 50%;">
-
-
-<input type="number" id="p-preco" placeholder="R$" min="0.01" step="0.01" style="width: 25%;">
-
-
-
-    <input type="hidden" id="p-id"> <button id="btn-salvar" onclick="executarAcaoProduto()" style="width: 25%; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Adicionar</button>
+<h3>Meus Produtos</h3>
+<div style="display: flex; gap: 5px; margin-bottom: 20px;">
+    <input type="text" id="p-nome" placeholder="Nome do Produto" style="width: 60%;">
+    <input type="number" id="p-preco" placeholder="R$" style="width: 30%;">
+    <button onclick="adicionarProduto()" style="width: 10%; background: #28a745;">+</button>
 </div>
-
-
-<hr>
-<h3>Minhas Listas de Compras</h3>
-<div id="lista-compras-salvas">
-    </div>
-
-<div id="modal-detalhes" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
-    <div class="card" style="max-width:400px; width:90%; position:relative;">
-        <button onclick="fecharModal()" style="position:absolute; right:15px; top:15px; background:none; border:none; font-size:20px; cursor:pointer;">&times;</button>
-        <h2 id="detalhe-nome-lista">Detalhes</h2>
-        <p id="detalhe-data-lista" style="color:#666;"></p>
-        <div id="detalhe-itens" style="text-align:left; margin-top:20px; max-height:300px; overflow-y:auto;">
-            </div>
-        <button onclick="fecharModal()" style="margin-top:20px; background:#6c757d; color:white; border:none; padding:10px; border-radius:5px; width:100%;">Fechar</button>
-    </div>
-</div>
-
-
-<div style="margin-top: 20px; margin-bottom: 10px;">
-    <input type="text" id="campo-busca" placeholder="🔍 Pesquisar produto..." 
-           onkeyup="filtrarProdutos()" 
-           style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; box-sizing: border-box;">
-</div>
-
 
 <div id="lista-produtos" style="text-align: left;"></div>
 
 
+
+</div>
 
 <script>
     // 1. Verifica se existe um token no localStorage assim que a página abre
@@ -238,22 +160,14 @@
                 // 3. Preenche os campos com os dados vindos do MongoDB
                 document.getElementById('email-usuario').innerText = dados.email;
                 document.getElementById('id-usuario').innerText = dados._id;
-
-
+                
                 // Pega a primeira letra do email para o Avatar
                 document.getElementById('avatar-inicial').innerText = dados.email.charAt(0).toUpperCase();
 
-
-
-   // TROCA O LOADING PELO CONTEÚDO
+                // 4. Troca o Loading pelo conteúdo real
                 document.getElementById('loading-area').style.display = 'none';
-                document.getElementById('conteudo-card').style.display = 'block';
-
-
-
-carregarProdutos();
-carregarListasDeCompras();
-
+                document.getElementById('conteudo-perfil').style.display = 'block';
+                carregarProdutos()
 
             } else {
                 // Se o token for inválido ou expirado, limpa e desloga
@@ -277,179 +191,26 @@ carregarListasDeCompras();
 
 
 
-let editandoId = null;
-async function executarAcaoProduto() {
-    const nome = document.getElementById('p-nome').value.trim();
-    const preco = parseFloat(document.getElementById('p-preco').value);
-
-    // Validação imediata no Frontend
-    if (nome.length < 2) {
-        alert("Por favor, digite um nome válido para o produto.");
-        return;
-    }
-    if (isNaN(preco) || preco <= 0) {
-        alert("O preço deve ser um valor positivo.");
-        return;
-    }
-
-    const url = editandoId ? `/products/${editandoId}` : '/products';
-    const metodo = editandoId ? 'PUT' : 'POST';
-
-    try {
-        const res = await fetch(url, {
-            method: metodo,
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token 
-            },
-            body: JSON.stringify({ nome, preco })
-        });
-
-        if (res.ok) {
-            cancelarEdicao();
-            carregarProdutos();
-        } else {
-            const erro = await res.json();
-            alert("Erro do servidor: " + erro.msg);
-        }
-    } catch (err) {
-        alert("Erro de conexão.");
-    }
-}
-
-
-function prepararEdicao(id, nome, preco) {
-    editandoId = id;
-    document.getElementById('p-nome').value = nome;
-    document.getElementById('p-preco').value = preco;
-    
-    const btn = document.getElementById('btn-salvar');
-    btn.innerText = "Salvar";
-    btn.style.background = "#ff9f43"; // Cor laranja para indicar edição
-}
-
-function cancelarEdicao() {
-    editandoId = null;
-    document.getElementById('p-nome').value = '';
-    document.getElementById('p-preco').value = '';
-    const btn = document.getElementById('btn-salvar');
-    btn.innerText = "Adicionar";
-    btn.style.background = "#28a745";
-}
-
-
-let produtosLocal = []; // Variável para guardar a lista completa
-
 async function carregarProdutos() {
     const res = await fetch('/products', {
         headers: { 'Authorization': 'Bearer ' + token }
     });
-    
-    // Guardamos os dados recebidos na nossa variável global
-    produtosLocal = await res.json();
-    
-    // Renderizamos a lista completa inicialmente
-    renderizarLista(produtosLocal);
-}
+    const produtos = await res.json();
+    const lista = document.getElementById('lista-produtos');
+    lista.innerHTML = ''; // Limpa a lista
 
-// Nova função apenas para desenhar os itens na tela
-function renderizarLista(listaParaExibir) {
-    const listaDiv = document.getElementById('lista-produtos');
-    listaDiv.innerHTML = '';
-
-    if (listaParaExibir.length === 0) {
-        listaDiv.innerHTML = '<p style="text-align:center; color:#999;">Nenhum produto encontrado.</p>';
-        return;
-    }
-
-    listaParaExibir.forEach(p => {
-        listaDiv.innerHTML += `
-            <div class="produto-item" style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+    produtos.forEach(p => {
+        lista.innerHTML += `
+            <div style="background: #f8f9fa; padding: 10px; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #007bff;">
                 <div>
                     <strong>${p.nome}</strong><br>
-                    <span style="color: #28a745;">R$ ${Number(p.preco).toFixed(2)}</span>
+                    <small>R$ ${p.preco}</small>
                 </div>
-                <div>
-                    <button onclick="prepararEdicao('${p._id}', '${p.nome}', ${p.preco})" style="background: #e1f5fe; color: #039be5; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Editar</button>
-                    <button onclick="deletarProduto('${p._id}')" style="background: #ffebee; color: #c62828; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Excluir</button>
-                </div>
+                <button onclick="deletarProduto('${p._id}')" style="background:none; border:none; color:red; cursor:pointer;">&times;</button>
             </div>
         `;
     });
 }
-
-// Chame esta função dentro do carregarDadosDoServidor()
-async function carregarListasDeCompras() {
-    try {
-        const res = await fetch('/shopping-lists', {
-            headers: { 'Authorization': 'Bearer ' + token }
-        });
-        const listas = await res.json();
-        const container = document.getElementById('lista-compras-salvas');
-        
-        if (listas.length === 0) {
-            container.innerHTML = '<p style="color:#999; font-size:14px;">Nenhuma lista salva ainda.</p>';
-            return;
-        }
-
-        container.innerHTML = '';
-        listas.forEach(lista => {
-            const dataFormatada = new Date(lista.data).toLocaleDateString('pt-BR');
-            container.innerHTML += `
-                <div class="item-lista-salva" onclick='abrirDetalhes(${JSON.stringify(lista)})'>
-                    <div>
-                        <strong>${lista.nome}</strong><br>
-                        <small style="color:#666;">Data: ${dataFormatada}</small>
-                    </div>
-                    <span class="badge-itens">${lista.itens.length} itens</span>
-                </div>
-            `;
-        });
-    } catch (err) {
-        console.error("Erro ao carregar listas:", err);
-    }
-}
-
-function abrirDetalhes(lista) {
-    document.getElementById('detalhe-nome-lista').innerText = lista.nome;
-    const dataFormatada = new Date(lista.data).toLocaleDateString('pt-BR');
-    document.getElementById('detalhe-data-lista').innerText = "Criada em: " + dataFormatada;
-
-    const itensDiv = document.getElementById('detalhe-itens');
-    itensDiv.innerHTML = '<h4>Itens:</h4>';
-    
-    lista.itens.forEach(item => {
-        itensDiv.innerHTML += `
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0;">
-                <span>${item.nome}</span>
-                <span style="font-weight:bold;">x${item.quantidade}</span>
-            </div>
-        `;
-    });
-
-    document.getElementById('modal-detalhes').style.display = 'flex';
-}
-
-function fecharModal() {
-    document.getElementById('modal-detalhes').style.display = 'none';
-}
-
-// Lembre-se de atualizar o carregarDadosDoServidor para incluir carregarListasDeCompras()
-
-
-// A função mágica de busca
-function filtrarProdutos() {
-    const termoBusca = document.getElementById('campo-busca').value.toLowerCase();
-    
-    // Filtramos o array local com base no nome
-    const produtosFiltrados = produtosLocal.filter(p => 
-        p.nome.toLowerCase().includes(termoBusca)
-    );
-
-    // Mandamos renderizar apenas os que sobraram no filtro
-    renderizarLista(produtosFiltrados);
-}
-
 
 async function adicionarProduto() {
     const nome = document.getElementById('p-nome').value;
