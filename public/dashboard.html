@@ -32,12 +32,12 @@
 
 
 <hr>
-<h3>Meus Produtos</h3>
-<div style="display: flex; gap: 5px; margin-bottom: 20px;">
-    <input type="text" id="p-nome" placeholder="Nome do Produto" style="width: 60%;">
-    <input type="number" id="p-preco" placeholder="R$" style="width: 30%;">
-    <button onclick="adicionarProduto()" style="width: 10%; background: #28a745;">+</button>
+<h3>Meus Produtos</h3><div style="display: flex; gap: 5px; margin-bottom: 20px;">
+    <input type="text" id="p-nome" placeholder="Nome do Produto" style="width: 50%;">
+    <input type="number" id="p-preco" placeholder="R$" min="0.01" step="0.01" style="width: 25%;">
+    <input type="hidden" id="p-id"> <button id="btn-salvar" onclick="executarAcaoProduto()" style="width: 25%; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">Adicionar</button>
 </div>
+
 
 <div id="lista-produtos" style="text-align: left;"></div>
 
