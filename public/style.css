@@ -2,12 +2,26 @@
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background: #f0f2f5; 
-            /*display: flex; */
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh;
-            width: 100%; 
-            margin: 0; 
+                                       
+            /* Faz o body ocupar a altura total da tela */
+            margin: 0;
+            height: 100vh; 
+
+            /* Ativa o Flexbox */
+            display: flex;
+
+            /* Muda a direção de linha para coluna (empilha os itens) */
+            flex-direction: column;
+
+            /* Centraliza verticalmente */
+            justify-content: center;
+
+            /* Centraliza horizontalmente */
+            align-items: center;
+
+            /* Espaço entre as divs */
+            gap: 20px;
+
         }
 
         .card { 
