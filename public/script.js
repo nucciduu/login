@@ -113,7 +113,7 @@ function cancelarEdicao() {
 }
 
 
-let produtosLocal = []; // Variável para guardar a lista completa
+//let produtosLocal = []; // Variável para guardar a lista completa
 
 
 let editandoId = null;
