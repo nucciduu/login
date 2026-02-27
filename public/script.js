@@ -199,6 +199,121 @@ async function carregarProdutos() {
     });
 }
 
+let produtosLocal = []; // Variável para guardar a lista completa
+
+async function carregarProdutos() {
+    const res = await fetch('/products', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    });
+    
+    // Guardamos os dados recebidos na nossa variável global
+    produtosLocal = await res.json();
+    
+    // Renderizamos a lista completa inicialmente
+    renderizarLista(produtosLocal);
+}
+
+// Nova função apenas para desenhar os itens na tela
+function renderizarLista(listaParaExibir) {
+    const listaDiv = document.getElementById('lista-produtos');
+    listaDiv.innerHTML = '';
+
+    if (listaParaExibir.length === 0) {
+        listaDiv.innerHTML = '<p style="text-align:center; color:#999;">Nenhum produto encontrado.</p>';
+        return;
+    }
+
+    listaParaExibir.forEach(p => {
+        listaDiv.innerHTML += `
+            <div class="produto-item" style="background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <div>
+                    <strong>${p.nome}</strong><br>
+                    <span style="color: #28a745;">R$ ${Number(p.preco).toFixed(2)}</span>
+                </div>
+                <div>
+                    <button onclick="prepararEdicao('${p._id}', '${p.nome}', ${p.preco})" style="background: #e1f5fe; color: #039be5; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-right: 5px;">Editar</button>
+                    <button onclick="deletarProduto('${p._id}')" style="background: #ffebee; color: #c62828; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Excluir</button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+// Chame esta função dentro do carregarDadosDoServidor()
+async function carregarListasDeCompras() {
+    try {
+        const res = await fetch('/shopping-lists', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const listas = await res.json();
+        const container = document.getElementById('lista-compras-salvas');
+        
+        if (listas.length === 0) {
+            container.innerHTML = '<p style="color:#999; font-size:14px;">Nenhuma lista salva ainda.</p>';
+            return;
+        }
+
+        container.innerHTML = '';
+        listas.forEach(lista => {
+            const dataFormatada = new Date(lista.data).toLocaleDateString('pt-BR');
+            container.innerHTML += `
+                <div class="item-lista-salva" onclick='abrirDetalhes(${JSON.stringify(lista)})'>
+                    <div>
+                        <strong>${lista.nome}</strong><br>
+                        <small style="color:#666;">Data: ${dataFormatada}</small>
+                    </div>
+                    <span class="badge-itens">${lista.itens.length} itens</span>
+                </div>
+            `;
+        });
+    } catch (err) {
+        console.error("Erro ao carregar listas:", err);
+    }
+}
+
+function abrirDetalhes(lista) {
+    document.getElementById('detalhe-nome-lista').innerText = lista.nome;
+    const dataFormatada = new Date(lista.data).toLocaleDateString('pt-BR');
+    document.getElementById('detalhe-data-lista').innerText = "Criada em: " + dataFormatada;
+
+    const itensDiv = document.getElementById('detalhe-itens');
+    itensDiv.innerHTML = '<h4>Itens:</h4>';
+    
+    lista.itens.forEach(item => {
+        itensDiv.innerHTML += `
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0;">
+                <span>${item.nome}</span>
+                <span style="font-weight:bold;">x${item.quantidade}</span>
+            </div>
+        `;
+    });
+
+    document.getElementById('modal-detalhes').style.display = 'flex';
+}
+
+function fecharModal() {
+    document.getElementById('modal-detalhes').style.display = 'none';
+}
+
+// Lembre-se de atualizar o carregarDadosDoServidor para incluir carregarListasDeCompras()
+
+
+// A função mágica de busca
+function filtrarProdutos() {
+    const termoBusca = document.getElementById('campo-busca').value.toLowerCase();
+    
+    // Filtramos o array local com base no nome
+    const produtosFiltrados = produtosLocal.filter(p => 
+        p.nome.toLowerCase().includes(termoBusca)
+    );
+
+    // Mandamos renderizar apenas os que sobraram no filtro
+    renderizarLista(produtosFiltrados);
+}
+
+
+
+
 async function adicionarProduto() {
     const nome = document.getElementById('p-nome').value;
     const preco = document.getElementById('p-preco').value;
@@ -226,4 +341,3 @@ async function deletarProduto(id) {
         carregarProdutos();
     }
 }
-
